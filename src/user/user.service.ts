@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { DbService } from 'src/db/db.service';
 import { createUserDto } from './dto/create_user.dto';
 import * as bcrypt from 'bcrypt';
-import { Role } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -20,12 +19,12 @@ export class UserService {
         email: data.email,
         designation: data.designation,
         department: data.department,
-        role:  Role.ADMIN,
+        // role:  Role.USER,
         password: hashedPassword
       }
     });
   }
-
+  
   async getAllUsers() {
     return this.dbService.user.findMany(
       

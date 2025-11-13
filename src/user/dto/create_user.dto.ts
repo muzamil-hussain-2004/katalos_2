@@ -1,11 +1,14 @@
-import { IsString, IsEmail, MinLength, isString } from 'class-validator';
+import { IsString, IsEmail, MinLength,  Matches } from 'class-validator';
 
 export class createUserDto {
 
   @IsString()
   name: string;
 
-  @IsEmail()
+  @IsEmail({}, { message: 'Invalid email format' })
+  @Matches(/^[\w.+\-]+@gmail\.com$/, {
+    message: 'Email must be a Gmail address (must end with @gmail.com)',
+  })
   email: string;
 
   @IsString()
@@ -18,7 +21,7 @@ export class createUserDto {
   @IsString()
   department: string;
 
-  @IsString()
-  role: string;
+  // @IsString()
+  // role: string;
 
 }
