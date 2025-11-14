@@ -2,6 +2,8 @@ import { IsBoolean, IsEnum, IsString, IsNumber, IsOptional } from 'class-validat
 import { LaptopCondition } from '@prisma/client';
 import { Type } from 'class-transformer'; // Todo 
 
+import { toBoolean } from 'src/common/decorators/to.boolean.decorator';
+
 export class laptopDto {
 
   @IsString()
@@ -10,8 +12,8 @@ export class laptopDto {
   @IsString()
   model: string
 
-  @IsString()
-  imageUrl: string
+  // @IsString()
+  // imageUrl: string
 
   @IsString()
   specifications: string
@@ -19,12 +21,14 @@ export class laptopDto {
   @IsEnum(LaptopCondition)
   condition: LaptopCondition
 
-  @Type(() => Boolean)
+  // @Type(() => Boolean)
+  @toBoolean()
   @IsOptional()
   @IsBoolean()
   isAssigned: boolean
 
-  @Type(() => Boolean)
+  // @Type(() => Boolean)
+  @toBoolean()
   @IsOptional()
   @IsBoolean()
   isForSale: boolean
