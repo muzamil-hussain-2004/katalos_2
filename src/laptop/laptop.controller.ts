@@ -11,15 +11,17 @@ import { JwtAuthGuard } from 'src/common/guards/jwt-auth-guard';
 import { LaptopService } from './laptop.service';
 import { laptopDto } from './dto/laptop_dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-// import { Roles } from 'src/common/decorators/roles.decorators'; // Todo
-// import { RolesGuards } from 'src/common/guards/roles.guards'; // Todo
+import { Roles } from 'src/common/decorators/roles.decorators'; // Todo
+import { RolesGuards } from 'src/common/guards/roles.guards'; // Todo
+import { Public } from 'src/common/decorators/public.decorator';
 
 
 @Controller('laptop')
+@UseGuards(JwtAuthGuard, RolesGuards)
 export class LaptopController {
-  constructor(private laptopService: LaptopService) {}
+constructor(private laptopService: LaptopService) {}
 
- @UseGuards(JwtAuthGuard)
+ @Roles('ADMIN')
  @Post('add')
  @UseInterceptors(FileInterceptor('file'))
  async addLaptop(
@@ -33,7 +35,7 @@ export class LaptopController {
    };
  }
 
-  @UseGuards(JwtAuthGuard)
+  @Roles('ADMIN')
   @Patch('assign')
   async assignLaptop(
     @Body('userId') userId: number,
@@ -45,7 +47,8 @@ export class LaptopController {
       data: laptop,
     }
   }
-
+ 
+  @Public()
   @Get('all')
   async getAlllaptops() {
     const laptops = await this.laptopService.getAllLaptops();
@@ -55,6 +58,7 @@ export class LaptopController {
     }
   }
 
+  @Public()
   @Get('forSale')
   async getLaptopsForSale() {
     const laptops = await this.laptopService.laptopsForSale();

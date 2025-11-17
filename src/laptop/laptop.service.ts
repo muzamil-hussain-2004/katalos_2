@@ -50,7 +50,7 @@ async assignLaptop(userId: number, laptopId: number) {
 
      if(user.assignedLaptopId)
      throw new BadRequestException('User already has an assigned Laptop');
-    
+
     const updatedLaptop = await tx.laptop.update({
       where: { id: laptopId },
       data: {
