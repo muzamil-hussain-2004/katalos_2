@@ -50,7 +50,7 @@ async assignLaptop(userId: number, laptopId: number) {
 
      if(user.assignedLaptopId)
      throw new BadRequestException('User already has an assigned Laptop');
-
+    
     const updatedLaptop = await tx.laptop.update({
       where: { id: laptopId },
       data: {
@@ -73,4 +73,25 @@ async assignLaptop(userId: number, laptopId: number) {
   });
 }
 
+async getAllLaptops() {
+  const laptops = await this.dbService.laptop.findMany({
+    include: {
+      assignedTo: true,
+    }
+  })
+
+  return laptops;
+}
+
+async laptopsForSale() {
+  const laptops = await this.dbService.laptop.findMany({
+    where: {
+      isForSale: true,
+    },
+    include: {
+      assignedTo: true,
+    }
+  })
+  return laptops;
+}
 }

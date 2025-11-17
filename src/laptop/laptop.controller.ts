@@ -1,5 +1,6 @@
 import { 
   Body,
+  Get,
   Controller,
   Post,
   UseInterceptors,
@@ -42,6 +43,24 @@ export class LaptopController {
     return {
       message: 'Laptop assigned successfully',
       data: laptop,
+    }
+  }
+
+  @Get('all')
+  async getAlllaptops() {
+    const laptops = await this.laptopService.getAllLaptops();
+    return {
+      message: 'Laptops fetched successfully',
+      data: laptops,
+    }
+  }
+
+  @Get('forSale')
+  async getLaptopsForSale() {
+    const laptops = await this.laptopService.laptopsForSale();
+    return {
+      message: 'Laptops for sale fetched successfully',
+      data: laptops
     }
   }
 

@@ -5,14 +5,12 @@ import { UserService } from 'src/user/user.service';
 import { signUpDto } from './dto/signUp.dto';
 import { signInDto } from './dto/signIn.dto';
 
-
 @Injectable()
 export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService
   ) {}
-
 
   async signUp(dto: signUpDto ) {
     const excitingUser = await this.userService.findByEmail(dto.email);
