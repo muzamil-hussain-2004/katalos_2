@@ -38,41 +38,40 @@ async addLaptop(data: laptopDto , file?: Express.Multer.File) {
 }
 
 async assignLaptop(userId: number, laptopId: number) {
-  return this.dbService.$transaction( async (tx) => {
-    // check laptop availability
-    const laptop = await tx.laptop.findUnique({ where: { id: laptopId } });
-    if (!laptop) throw new NotFoundException('Laptop not found');
+  // check laptop and user first outside transaction => no lock hold 
 
-    if (laptop.isAssigned) 
-    throw new BadRequestException('Laptop is already assigned');
-
-     // check user exist and not assigned laptop
-     const user = await tx.user.findUnique({ where: { id: userId } });
-     if (!user) throw new NotFoundException('User not found');
-
-     if(user.assignedLaptopId)
-     throw new BadRequestException('User already has an assigned Laptop');
-
-    const updatedLaptop = await tx.laptop.update({
-      where: { id: laptopId },
+  const laptop = await this.dbService.laptop.findUnique({
+    where: { id: laptopId }
+  });
+  if (!laptop) throw new NotFoundException('Laptop not found');
+  if(laptop.isAssigned) throw new BadRequestException('Laptop is already assigned');
+ 
+  const user = await this.dbService.user.findUnique({
+    where: { id: userId }
+  });
+  if (!user) throw new NotFoundException('user not found');
+  if (user.assignedLaptopId) throw new BadRequestException('user already has a laptop assigned');
+  
+  // transaction to assign laptop 
+  const [updatedLaptop] = await this.dbService.$transaction([
+    this.dbService.laptop.update({
+      where: {id: laptopId },
       data: {
         isAssigned: true,
-        assignedTo: {
-          connect: {id: userId}
-        },
-      },
-    });
-
-    await tx.user.update({
+        assignedTo: { connect: { id: userId } }
+      }
+    }),
+    this.dbService.user.update({
       where: { id: userId },
-      data: {
-        assignedLaptopId: laptopId
-      },
-    });
+      data: { assignedLaptopId: laptopId }
+    })
+  ]);
 
-    return { message: 'Laptop assigned successfully', data: updatedLaptop };
+  return {
+    message: 'Laptop assigned successfully',
+    data: updatedLaptop,
+  };
 
-  });
 }
 
 async getAllLaptops() {
@@ -97,23 +96,30 @@ async laptopsForSale() {
   return laptops;
 }
 
-// todo ... 
+async notAssignedLaptops() {
+  const laptops = await this.dbService.laptop.findMany({
+    where: {
+      isAssigned: false
+    }
+  });
+  return laptops;
+}
 
-// async putLaptopForsale(dto: putLaptopForsaleDto) {
-//  const laptop = await this.dbService.laptop.findUnique({ where: { id: dto.laptopId } });
-//  if (!laptop) throw new NotFoundException('Laptop not found');
+// todo ... i wll implement this featurs later
 
-//  const updatedLaptop = await this.dbService.laptop.update({
-//   where: { id: dto.laptopId},
-//   data: {
-//     isForSale: dto.isForSale,
-//     salePrice: dto.salePrice,
-//     listedBy: dto.listedBy
-//   }
-//  })
-// }
+async putLaptopForSale(data: putLaptopForsaleDto) {
+  const laptop = await this.dbService.laptop.findUnique({
+    where: { id: data.laptopId }
+  });
+  if(!laptop) throw new NotFoundException('Laptop not found');
 
-
-
+  const updatedLaptop = await this.dbService.laptop.update({
+    where: { id: data.laptopId },
+    data: {
+      isForSale: data.isForSale
+    }
+  });
+  return updatedLaptop;
+}
 
 }

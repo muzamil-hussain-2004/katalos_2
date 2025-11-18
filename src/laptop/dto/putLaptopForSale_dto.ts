@@ -6,11 +6,11 @@ export class putLaptopForsaleDto {
   laptopId: number;
 
   
-  @IsNumber()
-  salePrice: number;
+  // @IsNumber()
+  // salePrice: number; // removed beacuse user just can request not i will implement that later .
   
-  @IsString()
-  listedBy: string
+  // @IsNumber()
+  // listedBy: number
 
   @IsBoolean()
   isForSale: boolean

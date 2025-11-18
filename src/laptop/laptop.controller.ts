@@ -14,6 +14,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Roles } from 'src/common/decorators/roles.decorators'; // Todo
 import { RolesGuards } from 'src/common/guards/roles.guards'; // Todo
 import { Public } from 'src/common/decorators/public.decorator';
+import { putLaptopForsaleDto } from './dto/putLaptopForSale_dto';
 
 
 @Controller('laptop')
@@ -47,7 +48,19 @@ constructor(private laptopService: LaptopService) {}
       data: laptop,
     }
   }
- 
+
+  // i will make it better for now its ok 
+  
+  @Roles('ADMIN')
+  @Patch('togglesale')
+  async togglesale(@Body() dto: putLaptopForsaleDto) {
+    const listedForSale = await this.laptopService.putLaptopForSale(dto);
+    return {
+      message: 'Laptop sale status updated successfully',
+      data: listedForSale
+    }
+  }
+
   @Public()
   @Get('all')
   async getAlllaptops() {
@@ -66,6 +79,16 @@ constructor(private laptopService: LaptopService) {}
       message: 'Laptops for sale fetched successfully',
       data: laptops
     }
+  }
+
+  // not assigned laps 
+  @Get('notassigned')
+  async getNotAssignedLaps() {
+    const laptops = await this.laptopService.notAssignedLaptops();
+    return {
+      message: 'Not assigned laptops fecthed successfully',
+      data: laptops
+    };
   }
 
 }
