@@ -26,9 +26,9 @@ export class UserService {
     });
   }
   
-  async getAllUsers() {
+  async getunAssignedUsers() {
     return this.dbService.user.findMany(
-      
+      { where: { assignedLaptop: null } }
     );
   }
 

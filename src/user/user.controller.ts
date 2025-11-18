@@ -10,9 +10,18 @@ export class UserController {
 
  @Roles('ADMIN')
  @UseGuards(JwtAuthGuard, RolesGuards)
+ @Get('unassigned')
+ async getAllUsers() {
+  return this.userService.getunAssignedUsers();
+ }
+
+
+ @Roles('ADMIN')
+ @UseGuards(JwtAuthGuard, RolesGuards)
  @Get(':id')
  async getUserById(@Param('id', ParseIntPipe) id: number) {
   return this.userService.getUserById(id);
  }
+
 
 }

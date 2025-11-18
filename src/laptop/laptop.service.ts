@@ -2,6 +2,8 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { laptopDto } from './dto/laptop_dto';
 import { DbService } from 'src/db/db.service';
+import { butLaptop } from './dto/buyLaptop_dto';
+import { putLaptopForsaleDto } from './dto/putLaptopForSale_dto';
 
 @Injectable()
 export class LaptopService {
@@ -94,4 +96,24 @@ async laptopsForSale() {
   })
   return laptops;
 }
+
+// todo ... 
+
+// async putLaptopForsale(dto: putLaptopForsaleDto) {
+//  const laptop = await this.dbService.laptop.findUnique({ where: { id: dto.laptopId } });
+//  if (!laptop) throw new NotFoundException('Laptop not found');
+
+//  const updatedLaptop = await this.dbService.laptop.update({
+//   where: { id: dto.laptopId},
+//   data: {
+//     isForSale: dto.isForSale,
+//     salePrice: dto.salePrice,
+//     listedBy: dto.listedBy
+//   }
+//  })
+// }
+
+
+
+
 }
