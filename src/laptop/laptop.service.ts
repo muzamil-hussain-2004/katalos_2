@@ -71,7 +71,6 @@ async assignLaptop(userId: number, laptopId: number) {
     message: 'Laptop assigned successfully',
     data: updatedLaptop,
   };
-
 }
 
 async getAllLaptops() {
@@ -79,8 +78,7 @@ async getAllLaptops() {
     include: {
       assignedTo: true,
     }
-  })
-
+  });
   return laptops;
 }
 
@@ -105,7 +103,7 @@ async notAssignedLaptops() {
   return laptops;
 }
 
-// todo ... i wll implement this featurs later
+// todo ... i wll make it better later for now its okay ..
 
 async putLaptopForSale(data: putLaptopForsaleDto) {
   const laptop = await this.dbService.laptop.findUnique({
@@ -121,5 +119,16 @@ async putLaptopForSale(data: putLaptopForsaleDto) {
   });
   return updatedLaptop;
 }
+
+// todo ...
+// async updateLaptop() {
+//   const updatedLaptop = await this.
+// }
+
+
+
+
+
+
 
 }
