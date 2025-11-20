@@ -6,7 +6,8 @@ import {
   UseInterceptors,
   UploadedFile,
   UseGuards, 
-  Patch} from '@nestjs/common';
+  Patch,
+  Delete} from '@nestjs/common';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth-guard';
 import { LaptopService } from './laptop.service';
 import { laptopDto } from './dto/laptop_dto';
@@ -14,7 +15,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Roles } from 'src/common/decorators/roles.decorators'; // Todo
 import { RolesGuards } from 'src/common/guards/roles.guards'; // Todo
 import { Public } from 'src/common/decorators/public.decorator';
-import { putLaptopForsaleDto } from './dto/putLaptopForSale_dto';
+import { putLaptopForsaleDto } from './dto/PutLaptopForSaleDto';
 
 
 @Controller('laptop')
@@ -50,9 +51,9 @@ constructor(private laptopService: LaptopService) {}
   }
 
   // i will make it better for now its ok 
-  
+
   @Roles('ADMIN')
-  @Patch('togglesale')
+  @Patch('addforsale')
   async togglesale(@Body() dto: putLaptopForsaleDto) {
     const listedForSale = await this.laptopService.putLaptopForSale(dto);
     return {
@@ -89,6 +90,28 @@ constructor(private laptopService: LaptopService) {}
       message: 'Not assigned laptops fecthed successfully',
       data: laptops
     };
+  }
+
+  //not for sale laps all 
+
+  @Roles('ADMIN')
+  @Get('notforsalelaps')
+  async notForSaleLaptops() {
+    const laptops = await this.laptopService.notForSaleLaptops();
+    return {
+      message: 'Not for sale laptops fecthed successfully',
+      data: laptops
+    };
+  }
+
+  @Roles('ADMIN')
+  @Delete('removesale')
+  async removeLaptopSaleRecord(@Body('laptopId') laptopId: number) {
+    const removedLaptopSale = await this.laptopService.removeLaptopFromSale(laptopId);
+    return {
+      message: 'Laptop removed from sale successfully',
+      data: removedLaptopSale
+    }
   }
 
 }
