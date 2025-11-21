@@ -1,6 +1,7 @@
 import { OnEvent } from "@nestjs/event-emitter";
 import { MailService } from "../mail.service";
 import { Injectable } from "@nestjs/common";
+import { purchaseInterestTemplate } from "../templates/purchase-interest.template";
 
 @Injectable()
 export class PurchaseListner {
@@ -8,12 +9,7 @@ export class PurchaseListner {
    
   @OnEvent('purchase.interested')
   async handlePurchaseInterest(payload: any) {
-    const html = `
-    <h3> User Intrested in laptop </h3>
-    <p>User Name: ${payload.userName}</p>
-    <p>Laptop ID: ${payload.laptopId}</p>
-    <p>Sale Price: ${payload.salePrice}</p>
-    `;
+    const html = purchaseInterestTemplate(payload);
 
     await this.mailService.sendHrMail(
       `User Intrest in ${payload.laptopId}`,

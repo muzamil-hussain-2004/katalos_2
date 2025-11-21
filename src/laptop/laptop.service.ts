@@ -171,6 +171,21 @@ async putLaptopForSale(data: putLaptopForsaleDto) {
   });
 }
 
+// Get ann info of Intrested users 
+
+async getIntrestedUsers() {
+  const intrestedUsers = await this.dbService.purchase.findMany({
+    include: {
+      user: true,
+      laptop: true
+    }
+  });
+  return {
+    message: 'Intrested users fetched successfully',
+    data:  intrestedUsers
+  }
+}
+
 // when you need to remove laptop from sale 
 
 async removeLaptopFromSale(laptopId: number) {
@@ -187,8 +202,8 @@ async removeLaptopFromSale(laptopId: number) {
       data: {
         isForSale: false,
       }
-    })
-
+    });
+     // delete sale record
     const deleteSaleRecord = await tx.laptopSale.deleteMany({
       where: { laptopId: laptopId }
     });
@@ -197,8 +212,7 @@ async removeLaptopFromSale(laptopId: number) {
       deleteSaleCount: deleteSaleRecord.count,
     };
   })
-}
-
+} 
 // user intrested in laptop ... send mail to hr .
 
 async userIntrestedInLaptop(laptopId: number, userId: number) {
@@ -229,13 +243,12 @@ async userIntrestedInLaptop(laptopId: number, userId: number) {
 // emit event to send mail 
 
   this.eventEmitter.emit('purchase.interested', {
-    laptopId: laptop.id,
+    laptopId: laptop.laptopId,
     userName: user.name,
-    userEmail: user.email
+    userEmail: user.email,
+    salePrice: laptop.salePrice
   });
-
   return { message: 'Purchase interest recorded successfully', purchaseInfo };
-
 }
 
 }

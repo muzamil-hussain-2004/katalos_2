@@ -92,6 +92,18 @@ constructor(private laptopService: LaptopService) {}
     };
   }
 
+  // Get intrested users for a laptops 
+  @Roles('ADMIN')
+  @Get('intrestedusers')
+  async getIntrestedUsers() {
+   const intrestedUsers = await this.laptopService.getIntrestedUsers();
+   return {
+    message: 'Intrested users fetched successfully',
+    data: intrestedUsers
+   }
+  }
+
+
   //not for sale laps all 
 
   @Roles('ADMIN')
@@ -113,7 +125,6 @@ constructor(private laptopService: LaptopService) {}
       data: removedLaptopSale
     }
   }
-
 
   // new mail feature 
   @Post('userinterest')

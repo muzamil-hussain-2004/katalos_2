@@ -24,7 +24,7 @@ export class MailService {
 
  async sendHrMail(subject: string, html: string) {
   await this.transporter.sendMail({
-    from: `"Laptop System" <${this.configService.get<string>('MAIL_USER')}>`,
+    from: `"Katlos Laptop Service" <${this.configService.get<string>('MAIL_USER')}>`,
     to: this.configService.get<string>('HR_EMAIL'),
     subject,
     html,
