@@ -6,11 +6,13 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { LaptopModule } from './laptop/laptop.module';
+import { MailModule } from './mail/mail.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [ConfigModule.forRoot({
     isGlobal: true,
-  }), UserModule, AuthModule, CloudinaryModule, LaptopModule],
+  }), EventEmitterModule.forRoot(), UserModule, AuthModule, CloudinaryModule, LaptopModule, MailModule],
   controllers: [AppController],
   providers: [AppService],
 })

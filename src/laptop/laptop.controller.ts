@@ -114,4 +114,18 @@ constructor(private laptopService: LaptopService) {}
     }
   }
 
+
+  // new mail feature 
+  @Post('userinterest')
+  async userInrestInLaptop(
+    @Body('laptopId') laptopId: number,
+    @Body('userId') userId: number
+  ) {
+    const result = await this.laptopService.userIntrestedInLaptop(laptopId, userId);
+    return {
+      message: 'Your interest has been recorded successfully',
+      data: result
+    }
+  }
+
 }

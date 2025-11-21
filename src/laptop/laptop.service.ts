@@ -3,12 +3,14 @@ import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { laptopDto } from './dto/laptop_dto';
 import { DbService } from 'src/db/db.service';
 import { putLaptopForsaleDto } from './dto/PutLaptopForSaleDto';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class LaptopService {
 constructor(
   private cloudinaryService: CloudinaryService,
-  private dbService: DbService   
+  private dbService: DbService,
+  private eventEmitter: EventEmitter2   
 ) {}
 
 // Add new Laptop Admins can add Laptops 
@@ -197,24 +199,43 @@ async removeLaptopFromSale(laptopId: number) {
   })
 }
 
-// async toogleSaleStatus(laptopId: number, isForSale: boolean) {
-//   const checkSale = await this.dbService.laptopSale.findUnique({
-//     where: { laptopId: laptopId }
-//   });
-//   if (!checkSale) throw new NotFoundException('Laptop sale record not found');
-   
-//   const updatedStatus = await this.dbService.laptop.update({
-//     where: { id: laptopId },
-//     data: {
-//       isForSale: isForSale,
-//     }
-//   })
-// }
+// user intrested in laptop ... send mail to hr .
 
+async userIntrestedInLaptop(laptopId: number, userId: number) {
 
-// todo ...
-// async updateLaptop() {
-//   const updatedLaptop = await this.
-// }
+  const laptop = await this.dbService.laptopSale.findUnique({
+    where: { laptopId: laptopId },
+  });
+
+  const user = await this.dbService.user.findUnique({
+    where: { id: userId },
+  });
+
+  if(!laptop) throw new NotFoundException('Laptop not found');
+  if(!user) throw new NotFoundException('User not found');
+
+  const purchaseInfo = await this.dbService.purchase.create({
+    data: {
+      laptopId: laptopId,
+      userId: userId,
+      purchasePrice: laptop.salePrice
+    },
+    include: {
+      laptop: true,
+      user: true
+    }
+  });
+
+// emit event to send mail 
+
+  this.eventEmitter.emit('purchase.interested', {
+    laptopId: laptop.id,
+    userName: user.name,
+    userEmail: user.email
+  });
+
+  return { message: 'Purchase interest recorded successfully', purchaseInfo };
+
+}
 
 }
